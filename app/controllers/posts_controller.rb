@@ -1,4 +1,6 @@
 class PostsController < ApplicationController
+rescue_from ActiveRecord::RecordInvalid, with: :invalid_references 
+  
 
   def show
     post = Post.find(params[:id])
@@ -19,5 +21,10 @@ class PostsController < ApplicationController
   def post_params
     params.permit(:category, :content, :title)
   end
+
+  def invalid_references(invalid)
+    render json: {errors: invalid.record.errors}, status: :unprocessable_entity
+  end
+
 
 end
